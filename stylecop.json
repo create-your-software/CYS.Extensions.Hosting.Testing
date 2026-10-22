@@ -1,0 +1,13 @@
+﻿{
+  "$schema": "https://raw.githubusercontent.com/DotNetAnalyzers/StyleCopAnalyzers/master/StyleCop.Analyzers/StyleCop.Analyzers/Settings/stylecop.schema.json",
+  "settings": {
+
+    "documentationRules": {
+      "companyName": "Create Your Software",
+      "copyrightText": "Copyright (c) 2026 Create Your Software\r\nAll rights reserved.\r\n\r\nThis software is the proprietary property of Create Your Software.\r\nand is protected by copyright law and international treaties.\r\n\r\nUnauthorized use, reproduction, modification, distribution, or disclosure\r\nof this software, in whole or in part, is strictly prohibited without the\r\nexpress written permission of the copyright holder.\r\n\r\nUse without a valid license is strictly forbidden.\r\n\r\nContact www.createyour.software for licensing information."
+     },
+     "orderingRules": {
+      "systemUsingDirectivesFirst": false
+     }
+  }
+}

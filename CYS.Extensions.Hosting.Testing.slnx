@@ -1,0 +1,20 @@
+<Solution>
+  <Folder Name="/Solution Items/">
+    <File Path=".editorconfig" />
+    <File Path="change-log.md" />
+    <File Path="decision-log.md" />
+    <File Path="Directory.Build.props" />
+    <File Path="stylecop.json" />
+  </Folder>
+  <Folder Name="/src/">
+    <Project Path="src/CYS.Extensions.Hosting.Testing.csproj" />
+  </Folder>
+  <Folder Name="/test/">
+    <Project Path="test/CYS.Extensions.Hosting.Testing.Tests/CYS.Extensions.Hosting.Testing.Tests.csproj" />
+    <Project Path="test/PrematureDisposalApp/PrematureDisposalApp.csproj" />
+    <Project Path="test/SampleApp/SampleApp.csproj" />
+    <Project Path="test/SampleLibrary/SampleLibrary.csproj" Id="d0fc1538-77e4-4f1c-877a-b8c3c8028679" />
+    <Project Path="test/SecondSampleApp/SecondSampleApp.csproj" />
+    <Project Path="test/SynchronousSampleApp/SynchronousSampleApp.csproj" />
+  </Folder>
+</Solution>

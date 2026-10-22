@@ -1,0 +1,17 @@
+[*.cs]
+# Disable SA1413 (trailing commas on initializers)
+dotnet_diagnostic.SA1413.severity = none
+# using statement can be simplified
+dotnet_diagnostic.IDE0063.severity = none
+# remove unneccesary suppresion.
+dotnet_diagnostic.IDE0079.severity = none
+
+[/src/HostingListener.cs]
+# Disable underscores in constants
+dotnet_diagnostic.SA1310.severity = none
+
+[/test/CYS.Extensions.Hosting.Testing.Tests/HostApplicationFactoryTests.cs]
+# When calling async methods that have overloads accepting a CancellationToken parameter, 
+# prefer using the overload with TestContext.CancellationToken to enable cooperative cancellation 
+# and respect test timeouts.
+dotnet_diagnostic.MSTEST0049.severity = none
