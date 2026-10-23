@@ -1,7 +1,7 @@
 ﻿<Project Sdk="MSTest.Sdk/4.5.1">
 	<PropertyGroup>
-		<TargetFrameworks>net8.0;net9.0;net10.0</TargetFrameworks>
-		<NoWarn>$(NoWarn);SA0001;SA1600</NoWarn>
+		<TargetFrameworks>net8.0</TargetFrameworks>
+		<NoWarn>$(NoWarn);IDE0130;SA0001;SA1600</NoWarn>
 		<UseVSTest>true</UseVSTest>
 	</PropertyGroup>
 	

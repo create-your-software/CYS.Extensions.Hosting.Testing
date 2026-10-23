@@ -81,8 +81,7 @@ jobs:
             --configuration Release \
             --no-build \
             --no-restore \
-            --verbosity diagnostic \
-            -m:1
+            --verbosity normal \
         if: ${{ github.event_name != 'workflow_dispatch' || inputs.skip-test-and-coverage-steps == false }}
 
       - name: Upload raw coverage

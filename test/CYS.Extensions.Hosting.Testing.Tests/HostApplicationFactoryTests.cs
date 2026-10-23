@@ -290,7 +290,7 @@ namespace CYS.Extensions.Hosting.Testing.Tests
         }
 
         [TestMethod]
-        public async Task Throws_InvalidOperationException_From_WithHostBuilder_When_RunAsync_Is_Called_A_Second_Time()
+        public async Task Throws_InvalidOperationException_From_WithHostBuilder_After_RunAsync_Has_Completed()
         {
             // arrange
             string[] args = [];

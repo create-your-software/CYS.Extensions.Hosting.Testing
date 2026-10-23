@@ -26,9 +26,10 @@ namespace CYS.SampleApp
     {
         public virtual int ReturnValue => 0;
 
-        protected override Task ExecuteAsync(CancellationToken stoppingToken)
+        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            return Task.CompletedTask;
+            // Trying to discover a race condition in .NET 9.0.
+            await Task.Yield();
         }
     }
 }
