@@ -48,5 +48,7 @@
 		</PackageReference>
 	</ItemGroup>
 
-
+	<PropertyGroup>
+		<AltCoverAssemblyFilter>^(?!CYS\.Extensions\.Hosting\.Testing$).*</AltCoverAssemblyFilter>
+	</PropertyGroup>
 </Project>
