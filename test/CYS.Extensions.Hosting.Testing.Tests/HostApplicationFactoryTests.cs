@@ -291,7 +291,7 @@ namespace CYS.Extensions.Hosting.Testing.Tests
             Assert.AreEqual(expectedMessage, result.Message);
         }
 
-#if NET10_0_OR_GREATER
+#if NET11_0_OR_GREATER
         [TestMethod]
         public async Task Throws_InvalidOperationException_From_WithHostBuilder_After_RunAsync_Has_Completed()
         {
