@@ -1,0 +1,143 @@
+name: cys-build-extensions-hosting-testing
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/build-cys-extensions-hosting-testing.yml'
+      - 'src/**/*.*'
+      - 'tests/**/*.*'
+      - 'CYS.Extensions.Hosting.Testing.slnx'
+      - '!**/*.md'
+      - '!**/*.json'
+
+  pull_request:
+    paths:
+      - '.github/workflows/build-cys-extensions-hosting-testing.yml'
+      - 'src/**/*.*'
+      - 'tests/**/*.*'
+      - 'CYS.Extensions.Hosting.Testing.slnx'
+      - '!**/*.md'
+      - '!**/*.json'
+
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+  id-token: write
+
+env:
+  SOLUTION_NAME: CYS.Extensions.Hosting.Testing.slnx
+
+  # Change this value for each deployable version.
+  PROJECT_VERSION: '1.0.0'
+
+  WORKING_DIRECTORY: ${{ github.workspace }}
+  REPORTGENERATOR_LICENSE: ${{ secrets.REPORTGENERATOR_LICENSE }}
+
+jobs:
+  standard-build-job:
+    name: Build, Test, and Publish
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout the source
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Setup .NET 8, 9, and 10
+        uses: actions/setup-dotnet@v6.0.0
+        with:
+          dotnet-version: |
+            8.0.426
+            9.0.319
+            10.0.402
+
+      - name: Build
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+        env:
+          PROJECT_FULL_VERSION: ${{ env.PROJECT_VERSION }}.${{ github.run_number }}
+        run: |
+          dotnet build "${{ env.SOLUTION_NAME }}" \
+            --configuration Release \
+            -p:Version="${{ env.PROJECT_VERSION }}" \
+            -p:AssemblyVersion="${PROJECT_FULL_VERSION}" \
+            -p:FileVersion="${PROJECT_FULL_VERSION}" \
+            -p:SourceRevisionId="${{ env.PROJECT_VERSION }}+${{ github.sha }}"
+
+      - name: Test
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+        env:
+          AltCover: 'true'
+          CopyLocalLockFileAssemblies: 'true'
+          AltCoverLocalSource: 'true'
+          AltCoverAttributeFilter: ExcludeFromCodeCoverage
+          AltCoverInPlace: 'true'
+        run: |
+          dotnet test "${{ env.SOLUTION_NAME }}" \
+            --configuration Release \
+            --no-build \
+            --no-restore \
+            --verbosity normal
+        if: ${{ github.event_name != 'workflow_dispatch' || inputs.skip-test-and-coverage-steps == false }}
+
+      - name: Upload raw coverage
+        uses: actions/upload-artifact@v7
+        with:
+          name: coverage
+          path: |
+            ${{ env.WORKING_DIRECTORY }}/**/coverage*xml*
+          if-no-files-found: error
+        if: ${{ github.event_name != 'workflow_dispatch' || inputs.skip-test-and-coverage-steps == false }}
+
+      - name: Generate coverage report
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+        run: |
+          dotnet tool install --global dotnet-reportgenerator-globaltool
+
+          reportgenerator \
+            -reports:"./**/coverage*xml*" \
+            -targetdir:"./coveragereport" \
+            -reporttypes:"Html;HtmlChart;MarkdownSummary"
+
+          echo "## Code Coverage Report" >> "$GITHUB_STEP_SUMMARY"
+          cat "./coveragereport/Summary.md" >> "$GITHUB_STEP_SUMMARY"
+        if: ${{ github.event_name != 'workflow_dispatch' }}
+
+      - name: Upload coverage details
+        uses: actions/upload-artifact@v7
+        with:
+          name: coveragereport
+          path: ${{ env.WORKING_DIRECTORY }}/coveragereport
+          if-no-files-found: error
+        if: ${{ github.event_name != 'workflow_dispatch' }}
+
+      - name: Authenticate with NuGet.org
+        id: nuget-login
+        uses: NuGet/login@v1
+        with:
+          user: CYS.Chris
+        if: >-
+          github.ref == 'refs/heads/main' && github.event_name == 'push' && !contains(github.event.head_commit.message, '[skip publish]') && !contains(github.event.commits.*.author.name, 'dependabot[bot]')
+      
+      - name: Publish packages to NuGet.org
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+        env:
+          NUGET_API_KEY: ${{ steps.nuget-login.outputs.NUGET_API_KEY }}
+        run: |
+          dotnet nuget push \
+            "${{ env.WORKING_DIRECTORY }}/src/bin/Release/*.nupkg" \
+            --api-key "${NUGET_API_KEY}" \
+            --source "https://api.nuget.org/v3/index.json" \
+            --skip-duplicate
+
+          dotnet nuget push \
+            "${{ env.WORKING_DIRECTORY }}/src/bin/Release/*.snupkg" \
+            --api-key "${NUGET_API_KEY}" \
+            --source "https://api.nuget.org/v3/index.json" \
+            --skip-duplicate
+        if: >-
+          github.ref == 'refs/heads/main' && github.event_name == 'push' && !contains(github.event.head_commit.message, '[skip publish]') && !contains(github.event.commits.*.author.name, 'dependabot[bot]')
