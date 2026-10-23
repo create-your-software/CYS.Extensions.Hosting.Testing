@@ -70,13 +70,18 @@ jobs:
 
       - name: Test
         working-directory: ${{ env.WORKING_DIRECTORY }}
+        env:
+          AltCover: 'true'
+          CopyLocalLockFileAssemblies: 'true'
+          AltCoverLocalSource: 'true'
+          AltCoverAttributeFilter: ExcludeFromCodeCoverage
+          AltCoverInPlace: 'true'
         run: |
           dotnet test "${{ env.SOLUTION_NAME }}" \
             --configuration Release \
             --no-build \
             --no-restore \
             --verbosity normal \
-            -m:1
         if: ${{ github.event_name != 'workflow_dispatch' || inputs.skip-test-and-coverage-steps == false }}
 
       - name: Upload raw coverage
