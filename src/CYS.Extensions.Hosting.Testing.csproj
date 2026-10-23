@@ -11,7 +11,7 @@
 		<PackageProjectUrl>https://github.com/create-your-software/CYS.Extensions.Hosting.Testing</PackageProjectUrl>
 		<Authors>CYS.Chris</Authors>
 		<Company>CreateYour.Software</Company>
-		<PackageReadmeFile>readme.md</PackageReadmeFile
+		<PackageReadmeFile>readme.md</PackageReadmeFile>
 		<Copyright>Copyright © Chris Trout 2026</Copyright>
 		<PackageTags>dotnet;hosting;generic-host;integration-testing;testing</PackageTags>
 	</PropertyGroup>
