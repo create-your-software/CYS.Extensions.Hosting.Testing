@@ -17,8 +17,8 @@ The library is designed around a simple principle:
 
 - Executes the application's real entry point.
 - Captures the constructed host.
-- Supports service overrides during host construction.
-- Supports configuration overrides during host construction.
+- Supports service overrides during host construction through `WithHostBuilder()`.
+- Supports configuration overrides during host construction through `WithHostBuilder()`.
 - Controls host startup and shutdown during testing.
 - Provides access to application services.
 - Requires no test-specific branches in `Program.cs`.
@@ -35,7 +35,7 @@ No custom startup implementation is required.
 
 No application code needs to be aware that it is running inside an integration test.
 
-The Program class **MUST NOT** be static.
+The `Program` class **MUST NOT** be static.
 
 ## Why Was This Library Written?
 
@@ -79,18 +79,56 @@ await using var application =
 await application.RunAsync();
 ```
 
+## Customizing the Host
+
+Use `WithHostBuilder()` to modify the application's host during construction.
+
+The callback receives an `IHostApplicationBuilder` facade for the host being constructed by the application's real entry point.
+
+Changes made inside the callback are applied after the application's production registrations and before the service provider is created. This allows a test to:
+
+- replace application services,
+- remove existing registrations,
+- add test-specific services,
+- override configuration values, and
+- inspect the host configuration being constructed.
+
+```csharp
+await using var application =
+    new HostApplicationFactory<Program>()
+        .WithHostBuilder(
+            builder =>
+            {
+                builder.Services.RemoveAll<IMyDependency>();
+                builder.Services.AddSingleton<IMyDependency, TestDependency>();
+
+                builder.Configuration.AddInMemoryCollection(
+                    new Dictionary<string, string?>
+                    {
+                        ["FeatureOptions:Enabled"] = "true",
+                    });
+            });
+
+await application.RunAsync();
+```
+
+`WithHostBuilder()` must be called before `RunAsync()`.
+
+The callback does not create an alternate host or replace the application's composition root. The application still executes its real entry point and performs its normal registrations. The callback modifies that same host before it is built.
+
 ## Example: Replacing a Service with a Mock
 
 ```csharp
 var mock = new Mock<IMyDependency>();
 
 await using var application =
-    new HostApplicationFactory<Program>(
-        builder =>
-        {
-            builder.Services.RemoveAll<IMyDependency>();
-            builder.Services.AddSingleton(mock.Object);
-        });
+    new HostApplicationFactory<Program>()
+        .WithHostBuilder(
+            builder =>
+            {
+                builder.Services.RemoveAll<IMyDependency>();
+                builder.Services.AddSingleton(mock.Object);
+            });
 
 // arrange
 
@@ -114,22 +152,28 @@ mock.Verify(
 ```csharp
 await using var server = WireMockServer.Start();
 
+await using var application =
+    new HostApplicationFactory<Program>()
+        .WithHostBuilder(
+            builder =>
+            {
+                builder.Configuration.AddInMemoryCollection(
+                    new Dictionary<string, string?>
+                    {
+                        ["CustomerApi:BaseUrl"] = server.Url,
+                    });
+            });
+
 // arrange
 
 server
-    .Given(Request.Create().WithPath("/customers").UsingGet())
-    .RespondWith(Response.Create().WithStatusCode(200));
-
-await using var application =
-    new HostApplicationFactory<Program>(
-        builder =>
-        {
-            builder.Configuration.AddInMemoryCollection(
-                new Dictionary<string, string?>
-                {
-                    ["CustomerApi:BaseUrl"] = server.Url,
-                });
-        });
+    .Given(
+        Request.Create()
+            .WithPath("/customers")
+            .UsingGet())
+    .RespondWith(
+        Response.Create()
+            .WithStatusCode(200));
 
 // act
 
@@ -137,8 +181,10 @@ await application.RunAsync();
 
 // assert
 
-// Verify generated output.
+// Verify the generated application output with Assert methods.
 ```
+
+`Given()` in this example is a WireMock.Net API method. The test itself uses the Arrange, Act, Assert structure.
 
 ## Example: Verifying HTTP Output with WireMock.Net
 
@@ -146,17 +192,20 @@ await application.RunAsync();
 await using var server = WireMockServer.Start();
 
 await using var application =
-    new HostApplicationFactory<Program>(
-        builder =>
-        {
-            builder.Configuration.AddInMemoryCollection(
-                new Dictionary<string, string?>
-                {
-                    ["CustomerApi:BaseUrl"] = server.Url,
-                });
-        });
+    new HostApplicationFactory<Program>()
+        .WithHostBuilder(
+            builder =>
+            {
+                builder.Configuration.AddInMemoryCollection(
+                    new Dictionary<string, string?>
+                    {
+                        ["CustomerApi:BaseUrl"] = server.Url,
+                    });
+            });
 
 // arrange
+
+// Configure the application input that causes the request.
 
 // act
 
@@ -164,17 +213,21 @@ await application.RunAsync();
 
 // assert
 
-server.ShouldHaveReceived(
+var requests = server.FindLogEntries(
     Request.Create()
         .WithPath("/customers")
         .UsingPost());
+
+Assert.AreEqual(1, requests.Count());
 ```
 
 ## Host Interception
 
 The factory executes the application's actual entry point and subscribes to hosting diagnostic events.
 
-- `HostBuilding` exposes the `IHostApplicationBuilder`.
+- `HostBuilding` exposes the host while it is being constructed.
+- The factory adapts the intercepted host to `IHostApplicationBuilder`.
+- Callbacks registered through `WithHostBuilder()` are applied.
 - `HostBuilt` exposes the completed `IHost`.
 
 ```text
@@ -190,7 +243,7 @@ Build()
 HostBuilding
     |
     v
-Test overrides applied
+WithHostBuilder() callbacks applied
     |
     v
 HostBuilt
