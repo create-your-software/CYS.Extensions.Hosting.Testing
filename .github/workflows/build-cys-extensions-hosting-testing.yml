@@ -81,7 +81,7 @@ jobs:
             --configuration Release \
             --no-build \
             --no-restore \
-            --verbosity normal \
+            --verbosity diagnostic \
             -m:1
         if: ${{ github.event_name != 'workflow_dispatch' || inputs.skip-test-and-coverage-steps == false }}
 
