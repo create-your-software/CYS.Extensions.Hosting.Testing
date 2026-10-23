@@ -82,6 +82,7 @@ jobs:
             --no-build \
             --no-restore \
             --verbosity normal \
+            --maxcpucount:1
         if: ${{ github.event_name != 'workflow_dispatch' || inputs.skip-test-and-coverage-steps == false }}
 
       - name: Upload raw coverage
