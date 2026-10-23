@@ -1,6 +1,7 @@
 <Solution>
   <Folder Name="/Solution Items/">
     <File Path=".editorconfig" />
+    <File Path=".github/workflows/build-cys-extensions-hosting-testing.yml" />
     <File Path="change-log.md" />
     <File Path="decision-log.md" />
     <File Path="Directory.Build.props" />

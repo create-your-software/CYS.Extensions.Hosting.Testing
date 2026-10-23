@@ -26,7 +26,7 @@ namespace CYS.Extensions.Hosting.Testing.Tests
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using System;
     using System.Diagnostics.CodeAnalysis;
-    using System.Threading;
+    using System.Reflection;
     using System.Threading.Tasks;
 
     [ExcludeFromCodeCoverage]
@@ -196,7 +196,9 @@ namespace CYS.Extensions.Hosting.Testing.Tests
         {
             // arrange
             string[] args = ["--host-not-built"];
-            string expectedMessage = "Assembly 'SampleLibrary, Version=0.1.0.0, Culture=neutral, PublicKeyToken=null' does not have an entry point.";
+
+            Assembly assembly = typeof(SampleLibrary.Program).Assembly;
+            string expectedMessage = $"Assembly '{assembly.FullName}' does not have an entry point.";
 
             using (var host = new HostApplicationFactory<SampleLibrary.Program>(args))
             {
