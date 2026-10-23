@@ -16,4 +16,6 @@
 
 using System.Runtime.CompilerServices;
 
-[assembly:InternalsVisibleTo("CYS.Extensions.Hosting.Testing.Tests")]
+[assembly: InternalsVisibleTo("CYS.Extensions.Hosting.Testing.Tests.NET10")]
+[assembly: InternalsVisibleTo("CYS.Extensions.Hosting.Testing.Tests.NET9")]
+[assembly: InternalsVisibleTo("CYS.Extensions.Hosting.Testing.Tests.NET8")]

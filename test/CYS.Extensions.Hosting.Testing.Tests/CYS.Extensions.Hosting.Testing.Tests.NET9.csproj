@@ -1,0 +1,36 @@
+﻿<Project Sdk="MSTest.Sdk/4.5.1">
+	<PropertyGroup>
+		<TargetFrameworks>net9.0</TargetFrameworks>
+		<NoWarn>$(NoWarn);IDE0130;SA0001;SA1600</NoWarn>
+		<UseVSTest>true</UseVSTest>
+	</PropertyGroup>
+	
+	<ItemGroup>
+		<PackageReference Include="altcover" Version="9.0.145" />
+		<PackageReference Include="Autofac" Version="9.3.4" />
+		<PackageReference Include="Autofac.Extensions.DependencyInjection" Version="11.0.2" />
+		<PackageReference Include="Moq" Version="4.21.0" />
+		<PackageReference Include="Moq.Analyzers" Version="0.4.2">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>build; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="MSTest" Version="4.5.1" />
+	</ItemGroup>
+	
+	<ItemGroup>
+		<ProjectReference Include="..\..\src\CYS.Extensions.Hosting.Testing.csproj" />
+		<ProjectReference Include="..\PrematureDisposalApp\PrematureDisposalApp.csproj" />
+		<ProjectReference Include="..\SampleApp\SampleApp.csproj" />
+		<ProjectReference Include="..\SampleLibrary\SampleLibrary.csproj" />
+		<ProjectReference Include="..\SecondSampleApp\SecondSampleApp.csproj" />
+		<ProjectReference Include="..\SynchronousSampleApp\SynchronousSampleApp.csproj" />
+	</ItemGroup>
+	
+	<ItemGroup>
+	  <PackageReference Update="Microsoft.NET.Test.Sdk" Version="18.11.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<AdditionalFiles Include="..\..\stylecop.json" Link="stylecop.json" />
+	</ItemGroup>
+</Project>

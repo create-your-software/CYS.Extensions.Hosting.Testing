@@ -1,17 +1,22 @@
 <Solution>
   <Folder Name="/Solution Items/">
+    <File Path="../../CYS.Library.1.0.props" />
+    <File Path="../../CYS.StyleCop.2.0.props" />
+    <File Path="../../CYS.Test.2.0.props" />
+    <File Path="../../Directory.Build.props" />
+    <File Path="../../Directory.Build.targets" />
     <File Path=".editorconfig" />
-    <File Path=".github/workflows/build-cys-extensions-hosting-testing.yml" />
     <File Path="change-log.md" />
     <File Path="decision-log.md" />
-    <File Path="Directory.Build.props" />
     <File Path="stylecop.json" />
   </Folder>
   <Folder Name="/src/">
     <Project Path="src/CYS.Extensions.Hosting.Testing.csproj" />
   </Folder>
   <Folder Name="/test/">
-    <Project Path="test/CYS.Extensions.Hosting.Testing.Tests/CYS.Extensions.Hosting.Testing.Tests.csproj" />
+    <Project Path="test/CYS.Extensions.Hosting.Testing.Tests/CYS.Extensions.Hosting.Testing.Tests.NET8.csproj" />
+    <Project Path="test/CYS.Extensions.Hosting.Testing.Tests/CYS.Extensions.Hosting.Testing.Tests.NET9.csproj" />
+    <Project Path="test/CYS.Extensions.Hosting.Testing.Tests/CYS.Extensions.Hosting.Testing.Tests.NET10.csproj" />
     <Project Path="test/PrematureDisposalApp/PrematureDisposalApp.csproj" />
     <Project Path="test/SampleApp/SampleApp.csproj" />
     <Project Path="test/SampleLibrary/SampleLibrary.csproj" Id="d0fc1538-77e4-4f1c-877a-b8c3c8028679" />
