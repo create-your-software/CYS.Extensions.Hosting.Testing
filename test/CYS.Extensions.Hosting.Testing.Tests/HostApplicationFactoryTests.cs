@@ -27,7 +27,6 @@ namespace CYS.Extensions.Hosting.Testing.Tests
     using System;
     using System.Diagnostics.CodeAnalysis;
     using System.Reflection;
-    using System.Threading;
     using System.Threading.Tasks;
 
     [ExcludeFromCodeCoverage]
