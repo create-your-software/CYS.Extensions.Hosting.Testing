@@ -291,7 +291,6 @@ namespace CYS.Extensions.Hosting.Testing.Tests
             Assert.AreEqual(expectedMessage, result.Message);
         }
 
-#if NET11_0_OR_GREATER
         [TestMethod]
         public async Task Throws_InvalidOperationException_From_WithHostBuilder_After_RunAsync_Has_Completed()
         {
@@ -301,7 +300,9 @@ namespace CYS.Extensions.Hosting.Testing.Tests
 
             using (var host = new HostApplicationFactory<SampleApp.Program>(args))
             {
-                _ = await host.RunAsync();
+                var integerResult = await host.RunAsync();
+
+                Assert.AreEqual(0, integerResult);
 
                 // act
                 var result = Assert.ThrowsExactly<InvalidOperationException>(() => host.WithHostBuilder((builder) => { }));
@@ -311,6 +312,5 @@ namespace CYS.Extensions.Hosting.Testing.Tests
                 Assert.AreEqual(expectedMessage, result.Message);
             }
         }
-#endif
     }
 }
