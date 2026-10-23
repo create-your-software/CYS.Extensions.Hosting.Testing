@@ -247,6 +247,7 @@ namespace CYS.Extensions.Hosting.Testing.Tests
             }
         }
 
+#if NET10_0_OR_GREATER
         [TestMethod]
         public async Task Throws_InvalidOperationException_From_RunAsync_When_RunAsync_Is_Called_A_Second_Time()
         {
@@ -266,6 +267,7 @@ namespace CYS.Extensions.Hosting.Testing.Tests
                 Assert.AreEqual(expectedMessage, result.Message);
             }
         }
+#endif
 
         [TestMethod]
         public async Task Throws_InvalidOperationException_From_WithHostBuilder_When_WithHostBuilder_Is_Called_Twice()
@@ -289,6 +291,7 @@ namespace CYS.Extensions.Hosting.Testing.Tests
             Assert.AreEqual(expectedMessage, result.Message);
         }
 
+#if NET10_0_OR_GREATER
         [TestMethod]
         public async Task Throws_InvalidOperationException_From_WithHostBuilder_After_RunAsync_Has_Completed()
         {
@@ -308,5 +311,6 @@ namespace CYS.Extensions.Hosting.Testing.Tests
                 Assert.AreEqual(expectedMessage, result.Message);
             }
         }
+#endif
     }
 }
