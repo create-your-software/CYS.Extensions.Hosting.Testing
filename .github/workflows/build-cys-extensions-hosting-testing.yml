@@ -71,7 +71,7 @@ jobs:
       - name: Test
         working-directory: ${{ env.WORKING_DIRECTORY }}
         env:
-          AltCover: 'true'
+          AltCover: 'false'
           CopyLocalLockFileAssemblies: 'true'
           AltCoverLocalSource: 'true'
           AltCoverAttributeFilter: ExcludeFromCodeCoverage
