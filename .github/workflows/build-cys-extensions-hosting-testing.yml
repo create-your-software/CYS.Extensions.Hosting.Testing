@@ -70,12 +70,6 @@ jobs:
 
       - name: Test
         working-directory: ${{ env.WORKING_DIRECTORY }}
-        env:
-          AltCover: 'true'
-          CopyLocalLockFileAssemblies: 'true'
-          AltCoverLocalSource: 'true'
-          AltCoverAttributeFilter: ExcludeFromCodeCoverage
-          AltCoverInPlace: 'true'
         run: |
           dotnet test "${{ env.SOLUTION_NAME }}" \
             --configuration Release \
