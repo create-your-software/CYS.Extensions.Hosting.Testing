@@ -20,7 +20,6 @@ on:
       - 'CYS.Extensions.Hosting.Testing.slnx'
       - '!**/*.md'
       - '!**/*.json'
-
   workflow_dispatch:
 
 permissions:
@@ -32,7 +31,7 @@ env:
   SOLUTION_NAME: CYS.Extensions.Hosting.Testing.slnx
 
   # Change this value for each deployable version.
-  PROJECT_VERSION: '1.0.1'
+  PROJECT_VERSION: '1.1.0'
 
   WORKING_DIRECTORY: ${{ github.workspace }}
   REPORTGENERATOR_LICENSE: ${{ secrets.REPORTGENERATOR_LICENSE }}
@@ -52,9 +51,9 @@ jobs:
         uses: actions/setup-dotnet@v6.0.0
         with:
           dotnet-version: |
-            8.0.426
-            9.0.319
-            10.0.402
+            8.0.427
+            9.0.320
+            10.0.403
 
       - name: Build
         working-directory: ${{ env.WORKING_DIRECTORY }}

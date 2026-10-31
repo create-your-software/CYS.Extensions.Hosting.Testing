@@ -156,23 +156,14 @@ namespace CYS.Extensions.Hosting.Testing
                     return;
                 }
 
-                try
-                {
-                    await this.Host
-                        .StopAsync(CancellationToken.None)
-                        .ConfigureAwait(false);
-                }
-                finally
-                {
-                    // HostingListener captures the framework host from the
-                    // Microsoft.Extensions.Hosting "HostBuilt" diagnostic event.
-                    // Because HostApplicationFactory cannot substitute a different
-                    // IHost instance, the captured host is always the framework
-                    // implementation, which implements IAsyncDisposable.
-                    await (this.Host as IAsyncDisposable)!
-                        .DisposeAsync()
-                        .ConfigureAwait(false);
-                }
+                // HostingListener captures the framework host from the
+                // Microsoft.Extensions.Hosting "HostBuilt" diagnostic event.
+                // Because HostApplicationFactory cannot substitute a different
+                // IHost instance, the captured host is always the framework
+                // implementation, which implements IAsyncDisposable.
+                await (this.Host as IAsyncDisposable)!
+                    .DisposeAsync()
+                    .ConfigureAwait(false);
             }
             finally
             {
@@ -274,8 +265,6 @@ namespace CYS.Extensions.Hosting.Testing
             var systemUnderTest = await this.CreateHostAsync().ConfigureAwait(false);
 
             this.Host = systemUnderTest.Host;
-
-            await this.Host.StartAsync(cancellationToken).ConfigureAwait(false);
 
             var result = await systemUnderTest.EntryPointTask.WaitAsync(cancellationToken).ConfigureAwait(false);
 
