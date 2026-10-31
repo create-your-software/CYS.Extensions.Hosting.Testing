@@ -32,6 +32,7 @@ No testing branch is required.
 No alternate startup path is required.
 
 No custom startup implementation is required.
+- The only required change is if testers want to validate things within the system-under-test.
 
 No application code needs to be aware that it is running inside an integration test.
 
@@ -275,6 +276,41 @@ Factory calls StopAsync()
 Factory disposes host
 ```
 
+## Changes that need to be made if the tester wants to verify objects from the system-under-test.
+```csharp
+// Using the "PreserveHostForTesting" command line argument to
+// preserve the internal Host for further inspection.
+
+var hostBuilder = Host.CreateEmptyApplicationBuilder(settings);
+hostBuilder.Services.AddHostedService<YourProcessor>();
+                
+var host = hostBuilder.Build();
+
+try
+{
+    await host.StartAsync().ConfigureAwait(false);
+
+    // This is part of the CYS.Extensions.Hosting.Testing.HostExtensions class.
+    await host.WaitUntilCompletionAsync();
+
+    // This is part of the CYS.Extensions.Hosting.Testing.HostExtensions class.
+    await host.StopAsync().ConfigureAwait(false);
+
+    result = 0;
+}
+finally
+{
+    var config = host.Services.GetRequiredService<IConfiguration>();
+    var preserveHostForTesting = config.GetValue<bool>("PreserveHostForTesting");
+    if (!preserveHostForTesting)
+    {
+        host?.Dispose();
+    }
+}
+
+```
+
+
 ## Design Philosophy
 
 Application code should perform application work.
@@ -294,5 +330,5 @@ During integration testing, host ownership belongs to `HostApplicationFactory<TE
 - Preserve production dependency registration.
 - Apply test overrides before service-provider creation.
 - Support deterministic integration tests.
-- Avoid test-only branches in `Program.cs`.
+- Avoid test-only branches in `Program.cs` as much as possible.
 - Avoid duplicating the application's composition root.
